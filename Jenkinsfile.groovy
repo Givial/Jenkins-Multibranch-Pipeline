@@ -1,20 +1,34 @@
 pipeline {
     agent any
-        stages{
-                stage('One'){
-                    steps {
-                        sh 'echo "Step One"'
+
+    environment {
+        EXECUTE = 'false'
+    }
+
+    stages{
+         stage ('First') {
+            steps {
+                env.EXECUTE = 'true'
+                echo "Updating Second Stage to the Second Stage"  
                     }
                 }
-                stage('Two'){
+                stage ('Second') {
+                    when {
+                         env.EXECUTE = 'true'
+                        }
                     steps {
-                        sh ' echo "Step Two" '
+                        echo "The Second stage can be executed"
                     }
                 }
-                stage ('Three'){
+        
+                stage ('Third'){
+                    when {
+                        env.EXECUTE != 'false'
+                    }
                     steps {
-                        sh ' echo "step Three"'
+                         echo "This stage has to be skipped"
                     }
                 }
+    
         }
 }
